@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1,user-scalable=no,target-densitydpi=medium-dpi,minimal-ui">
+<head>
+    <meta charset="UTF-8">
+    <title>图片相似度demo</title>
+    <script src="http://lib.sinaapp.com/js/jquery/3.1.0/jquery-3.1.0.min.js"></script>
+    <script>
+      $(function(){
+       var html='';
+       var image_paths=[];
+       for(i=0;i<=55;i++){
+         var num=i;
+         if(num<10){
+            num='0'+num
+         }  
+	 var img_url="http://sift.i.ubolixin.com/bow/dataset/train/ukbench000"+num+".jpg"
+         image_paths.push(img_url);
+       }
+       Array.prototype.shuffle = function() {
+    var input = this;
+
+    for (var i = input.length-1; i >=0; i--) {
+
+        var randomIndex = Math.floor(Math.random()*(i+1)); 
+        var itemAtIndex = input[randomIndex]; 
+
+        input[randomIndex] = input[i]; 
+        input[i] = itemAtIndex;
+    }
+    return input;
+}
+       image_paths.shuffle();
+       image_paths.forEach(function(v){
+         html+='<img src="'+v+'" />'
+      })
+       
+	$('#imgs').html(html)
+       
+ 
+ 
+      });
+     
+function search(){
+  var kw = $('#search').val()
+   $.get('http://i.ubolixin.com:8000/?search='+kw,function(data){
+        var json=JSON.parse(data)
+        var html='';
+        json.forEach(function(v){
+            html+='<img src="http://sift.i.ubolixin.com/bow/'+v+'" />';
+        });
+        $('#imgs').html(html);
+   })
+}
+
+      
+    
+    </script>
+    <style>
+      #imgs{
+        margin-top:20px;
+      }
+      #imgs img{
+        display:inline-block;
+        width:10%;
+        margin:5px;
+      }
+    </style>
+</head>
+<body>
+   <h1>图片相似demo</h1> 
+<input type="text" id="search" /> <button onclick="search()">找相似</button>
+
+<div id="imgs">
+</div>
+
+
+</body>
+</html>
