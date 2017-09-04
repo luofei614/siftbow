@@ -14,20 +14,17 @@ import matplotlib as mpl
 mpl.use('Agg')
 
 from pylab import *
-import cgi
-import json
 #from PIL import Image
 #from rootsift import RootSIFT
 
 # Get the path of the training set
-'''
-parser = ap.ArgumentParser()
-parser.add_argument("-i", "--image", help="Path to query image", required="True")
-args = vars(parser.parse_args())
-
-# Get query image path
-image_path = args["image"]
-'''
+def main():
+	parser = ap.ArgumentParser()
+	parser.add_argument("-i", "--image", help="Path to query image", required="True")
+	args = vars(parser.parse_args())
+	# Get query image path
+	image_path = args["image"]
+	search(image_path);
 def search(image_path):
 	# Load the classifier, class names, scaler, number of clusters and vocabulary
 	im_features, image_paths, idf, numWords, voc = joblib.load("bof.pkl")
@@ -76,20 +73,8 @@ def search(image_path):
             result.append(image_paths[ID])
         return result
 
-
-def application(env,start_response):
-    start_response('200 ok',[('Content-Type','text/html'),('Access-Control-Allow-Origin','*')]);
-    lens=env.get('CONTENT_LENGTH','0')
-    if lens=="":
-        length=0;
-    else:
-        length=int(lens)
-    body=''
-    result=[]
-    fields=cgi.FieldStorage(fp=env['wsgi.input'],environ=env,keep_blank_values=1)
-    if 'search' in fields:
-        result=search(fields.getvalue('search'))
-    return [json.dumps(result)]
+if __name__=='__main__':
+     main();
 
 
 '''
