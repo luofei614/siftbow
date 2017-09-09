@@ -47,9 +47,10 @@ def application(env,start_response):
            result=search(img_file_path)
            #basename
            ret=[]
-           for r in result:
-               ret.append(os.path.basename(r))
+           for p,s in result:
+               ret.append((os.path.basename(p),float(s)))
            os.remove(img_file_path)
+           print(ret)
            return [json.dumps(ret)]
         else:
            return ['error']

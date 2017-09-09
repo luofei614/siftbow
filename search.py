@@ -65,12 +65,15 @@ def search(image_path):
 	test_features = preprocessing.normalize(test_features, norm='l2')
 
 	score = np.dot(test_features, im_features.T)
+        print('score:')
+        print(score)
 	rank_ID = np.argsort(-score)
         print('ids:')
         print(rank_ID)
         result=[]
-	for i, ID in enumerate(rank_ID[0]):
-            result.append(image_paths[ID])
+	for i, ID in enumerate(rank_ID[0][0:16]):
+            result.append((image_paths[ID],'%.2f' % score[0][ID]))
+        print(result)
         return result
 
 if __name__=='__main__':
