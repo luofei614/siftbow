@@ -6,6 +6,12 @@ import numpy as np
 import os
 from sklearn.externals import joblib
 from scipy.cluster.vq import *
+import matplotlib as mpl
+mpl.use('Agg')
+from matplotlib import pyplot as plt
+#fig = plt.figure(figsize=(20,20))
+#ax = plt.subplot(111,aspect = 'equal')
+#plt.subplots_adjust(left=0, bottom=0, right=1, top=1, wspace=0, hspace=0)
 
 from sklearn import preprocessing
 #from rootsift import RootSIFT
@@ -38,11 +44,17 @@ def train(train_path):
 	des_list = []
 	for i, image_path in enumerate(image_paths):
 	    im = cv2.imread(image_path)
+	    im = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY) 
 	    print "Extract SIFT of %s image, %d of %d images" %(training_names[i], i, len(image_paths))
 	    #kpts = fea_det.detect(im)
 	    #kpts, des = des_ext.compute(im, kpts)
 	    orb = cv2.ORB()
 	    kpts, des = orb.detectAndCompute(im,None)
+            draw_path="./draw_image/drawdes_"+os.path.basename(image_path)+".png";
+            im_draw=cv2.drawKeypoints(im,kpts,flags=cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS);
+            plt.axis("off")
+            plt.imshow(im_draw)
+            plt.savefig(draw_path,bbox_inches="tight")
 	    # rootsift
 	    #rs = RootSIFT()
 	    #des = rs.compute(kpts, des)

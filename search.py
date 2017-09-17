@@ -12,6 +12,7 @@ from sklearn import preprocessing
 import numpy as np
 import matplotlib as mpl
 mpl.use('Agg')
+from matplotlib import pyplot as plt
 
 from pylab import *
 #from PIL import Image
@@ -37,6 +38,8 @@ def search(image_path):
 	des_list = []
 
 	im = cv2.imread(image_path)
+        #grey
+	im = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
 
 	orb = cv2.ORB()
 	kpts, des = orb.detectAndCompute(im,None)
@@ -65,14 +68,23 @@ def search(image_path):
 	test_features = preprocessing.normalize(test_features, norm='l2')
 
 	score = np.dot(test_features, im_features.T)
-        print('score:')
-        print(score)
 	rank_ID = np.argsort(-score)
-        print('ids:')
-        print(rank_ID)
         result=[]
 	for i, ID in enumerate(rank_ID[0][0:16]):
             result.append((image_paths[ID],'%.2f' % score[0][ID]))
+        im_draw=cv2.drawKeypoints(im,kpts,flags=cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS);
+        plt.subplot(2,1,1)
+        plt.axis("off")
+        plt.imshow(im_draw)
+        plt.subplot(2,1,2)
+        first_path="./draw_image/drawdes_"+os.path.basename(result[0][0])+".png";
+	im_first = cv2.imread(first_path)
+        plt.axis("off")
+        plt.imshow(im_first)
+        draw_path="./search_image/s_"+os.path.basename(image_path)+".png";
+        result.append((draw_path,'0'));
+        plt.savefig(draw_path,bbox_inches='tight', dpi = 200)
+
         print(result)
         return result
 
